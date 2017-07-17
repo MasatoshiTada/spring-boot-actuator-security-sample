@@ -179,6 +179,11 @@ $ curl -v -u actuator:password -X GET http://localhost:8080/health | jq
 }
 ```
 
+> エンドポイントにアクセス可能なロール名を変更したい場合は、application.propertiesに下記の設定を記述します。
+> ```properties
+> management.security.roles=ロール名1,ロール名2,...
+> ```
+
 # 手順5. `USER` ロールでのアクセス
 
 - `USER` ロールでsensitiveなエンドポイントにアクセスします。 `ACTUATOR` ロールではないので情報は取得できませんが、ステータスコードが401(未認証)ではなく403(アクセス権なし)になっていることが分かります。
