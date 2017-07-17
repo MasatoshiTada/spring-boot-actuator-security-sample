@@ -128,9 +128,6 @@ $ curl -v -u actuator:password -X GET http://localhost:8080/mappings | jq
 < Transfer-Encoding: chunked
 < Date: Mon, 17 Jul 2017 05:23:49 GMT
 <
-{ [5617 bytes data]
-100  5609    0  5609    0     0   791k      0 --:--:-- --:--:-- --:--:-- 1369k
-* Connection #0 to host localhost left intact
 {
   "/webjars/**": {
     "bean": "resourceHandlerMapping"
