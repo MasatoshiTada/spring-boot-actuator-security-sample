@@ -97,6 +97,7 @@ public class SpringBootActuatorSecuritySampleApplication {
 ```
 
 > Spring Boot 1.5以降では、 `ACTUATOR` ロールを持つユーザーのみsensitiveなエンドポイントにアクセスできるようになりました。
+> http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready-sensitive-endpoints
 
 # 手順4. `ACTUATOR` ロールでのアクセス
 
