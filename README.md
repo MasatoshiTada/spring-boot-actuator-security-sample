@@ -56,7 +56,7 @@ $ curl -v -X GET http://localhost:8080/health | jq
 }
 ```
 
-# 手順3. セキュリテイ設定の追加
+# 手順3. セキュリティ設定の追加
 
 - `spring-boot-starter-security` を依存性に追加します。
 
@@ -146,7 +146,7 @@ $ curl -v -u actuator:password -X GET http://localhost:8080/mappings | jq
 }
 ```
 
-- `ACTUATOR` ロールでsensitiveでないエンドポイントにアクセスします。セキュリテイ設定をする前より、多くの情報が取得できていることが分かります。
+- `ACTUATOR` ロールでsensitiveでないエンドポイントにアクセスします。セキュリティ設定をする前より、多くの情報が取得できていることが分かります。
 
 ```bash
 $ curl -v -u actuator:password -X GET http://localhost:8080/health | jq
