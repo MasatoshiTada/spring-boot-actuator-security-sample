@@ -56,6 +56,9 @@ $ curl -v -X GET http://localhost:8080/health | jq
 }
 ```
 
+> 各エンドポイントがデフォルトでsensitiveか否かはリファレンスに記載されています。
+> http://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#production-ready-endpoints
+
 # 手順3. セキュリティ設定の追加
 
 - `spring-boot-starter-security` を依存性に追加します。
