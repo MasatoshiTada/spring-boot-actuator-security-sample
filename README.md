@@ -36,7 +36,7 @@ $ curl -v -X GET http://localhost:8080/mappings | jq
 }
 ```
 
-- sensitiveでないエンドポイント(例: `/health` )にアクセスすると、ステータスコードは200になりますが、一部の情報しか取得できません。
+- sensitiveでないエンドポイント(例: `/health` )にアクセスすると、ステータスコードは200(OK)になりますが、一部の情報しか取得できません。
 
 ```bash
 $ curl -v -X GET http://localhost:8080/health | jq
@@ -59,7 +59,84 @@ $ curl -v -X GET http://localhost:8080/health | jq
 > 各エンドポイントがデフォルトでsensitiveか否かはリファレンスに記載されています。
 > http://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#production-ready-endpoints
 
-# 手順3. セキュリティ設定の追加
+# 手順3. sensitive設定の変更
+
+- application.propertiesに下記の設定を記述し、 `/mappings` を非sensitiveに、 `/health` をsensitiveに変更します。
+
+```properties
+endpoints.mappings.sensitive=false
+endpoints.health.sensitive=true
+```
+
+- プロジェクトを再起動します。
+- `/mappings` にアクセスすると、ステータスコードが200(OK)になり、情報が取得できることが分かります。
+
+```bash
+$ $ curl -v -X GET http://localhost:8080/mappings | jq
+> GET /mappings HTTP/1.1
+> Host: localhost:8080
+> User-Agent: curl/7.51.0
+> Accept: */*
+>
+< HTTP/1.1 200
+< X-Application-Context: application
+< Content-Type: application/vnd.spring-boot.actuator.v1+json;charset=UTF-8
+< Transfer-Encoding: chunked
+< Date: Tue, 18 Jul 2017 01:48:43 GMT
+<
+{
+  "/webjars/**": {
+    "bean": "resourceHandlerMapping"
+  },
+  "/**": {
+    "bean": "resourceHandlerMapping"
+  },
+  "/**/favicon.ico": {
+    "bean": "faviconHandlerMapping"
+  },
+  "{[/error]}": {
+    "bean": "requestMappingHandlerMapping",
+    "method": "public org.springframework.http.ResponseEntity<java.util.Map<java.lang.String, java.lang.Object>> org.springframework.boot.autoconfigure.web.BasicErrorController.error(javax.servlet.http.HttpServletRequest)"
+  },
+  (以下省略)
+}
+```
+
+- `/health` にアクセスすると、ステータスコードが401(未認証)になり、情報が取得できなくなったことが分かります。
+
+```bash
+$ curl -v -X GET http://localhost:8080/health | jq
+> GET /health HTTP/1.1
+> Host: localhost:8080
+> User-Agent: curl/7.51.0
+> Accept: */*
+>
+< HTTP/1.1 401
+< X-Application-Context: application
+< Content-Type: application/vnd.spring-boot.actuator.v1+json;charset=UTF-8
+< Transfer-Encoding: chunked
+< Date: Tue, 18 Jul 2017 01:52:31 GMT
+<
+{
+  "timestamp": 1500342751450,
+  "status": 401,
+  "error": "Unauthorized",
+  "message": "Full authentication is required to access this resource.",
+  "path": "/health"
+}
+```
+
+- application.propertiesの記述をコメントアウト(または削除)します。これにより、設定をデフォルト( `/mappings` はsensitive、 `/health` は非sensitive)に戻します。
+
+```properties
+#endpoints.mappings.sensitive=false
+#endpoints.health.sensitive=true
+```
+
+- プロジェクトを再起動します。
+- `/mappings` と `/health` にアクセスして、sensitiveの設定が元に戻ったことを確かめてください。
+
+# 手順4. セキュリティ設定の追加
 
 - `spring-boot-starter-security` を依存性に追加します。
 
@@ -102,10 +179,10 @@ public class SpringBootActuatorSecuritySampleApplication {
 > Spring Boot 1.5以降では、 `ACTUATOR` ロールを持つユーザーのみsensitiveなエンドポイントにアクセスできるようになりました。
 > http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready-sensitive-endpoints
 
-# 手順4. `ACTUATOR` ロールでのアクセス
+# 手順5. `ACTUATOR` ロールでのアクセス
 
 - プロジェクトを再起動します。
-- `ACTUATOR` ロールでsensitiveなエンドポイントにアクセスします。ステータスコードが200になり、情報が取得できていることが分かります。
+- `ACTUATOR` ロールでsensitiveなエンドポイントにアクセスします。ステータスコードが200(OK)になり、情報が取得できていることが分かります。
 
 ```bash
 $ curl -v -u actuator:password -X GET http://localhost:8080/mappings | jq
@@ -146,7 +223,7 @@ $ curl -v -u actuator:password -X GET http://localhost:8080/mappings | jq
 }
 ```
 
-- `ACTUATOR` ロールでsensitiveでないエンドポイントにアクセスします。セキュリティ設定をする前より、多くの情報が取得できていることが分かります。
+- `ACTUATOR` ロールでsensitiveでないエンドポイントにアクセスします。ステータスコードは変わらず200(OK)ですが、セキュリティ設定をする前より、多くの情報が取得できていることが分かります。
 
 ```bash
 $ curl -v -u actuator:password -X GET http://localhost:8080/health | jq
@@ -185,7 +262,7 @@ $ curl -v -u actuator:password -X GET http://localhost:8080/health | jq
 > management.security.roles=ロール名1,ロール名2,...
 > ```
 
-# 手順5. `USER` ロールでのアクセス
+# 手順6. `ACTUATOR` 以外のロールでのアクセス
 
 - `USER` ロールでsensitiveなエンドポイントにアクセスします。 `ACTUATOR` ロールではないので情報は取得できませんが、ステータスコードが401(未認証)ではなく403(アクセス権なし)になっていることが分かります。
 

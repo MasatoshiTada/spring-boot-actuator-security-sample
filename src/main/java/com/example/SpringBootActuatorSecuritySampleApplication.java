@@ -15,11 +15,15 @@ public class SpringBootActuatorSecuritySampleApplication {
 
     @Configuration
     static class SecurityConfig extends WebSecurityConfigurerAdapter {
-
+        /**
+         * ログイン可能なユーザーを定義するメソッド
+         */
         @Override
         protected void configure(AuthenticationManagerBuilder auth) throws Exception {
             auth.inMemoryAuthentication()
+                    // ユーザー名:actuator、パスワード:password、ロール:ACTUATORのユーザーを追加
                     .withUser("actuator").password("password").roles("ACTUATOR").and()
+                    // ユーザー名:user、パスワード:password、ロール:USERのユーザーを追加
                     .withUser("user").password("password").roles("USER");
         }
     }
