@@ -150,14 +150,21 @@ $ curl -v -X GET http://localhost:8080/health | jq
 - `USER` ロールのユーザーと、 `ACTUATOR` ロールのユーザーを作成します。
 
 ```java
+package com.example;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+
 @SpringBootApplication
 public class SpringBootActuatorSecuritySampleApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(SpringBootActuatorSecuritySampleApplication.class, args);
     }
-    
-    // 下記のコードを追加する
+	
     @Configuration
     static class SecurityConfig extends WebSecurityConfigurerAdapter {
         
