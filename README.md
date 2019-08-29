@@ -1,6 +1,8 @@
 Spring Boot Actuator Security Sample
 ====================================
 
+> この資料はSpring Boot 1.5向けです。Spring Boot 2.x以降には全く役に立ちません！！！
+
 目標時間：15分
 
 > 以下の手順は、Spring Boot 1.5以降で実行してください。
